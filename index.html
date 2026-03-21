@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="CodeFlow Visualizer — A modern runtime execution visualization tool for developers." />
+    <title>CodeFlow Visualizer</title>
+    <style>
+      :root {
+        --accent: #6366f1;
+        --bg-primary: #09090b;
+        --bg-secondary: #18181b;
+      }
+      body {
+        background: var(--bg-primary);
+        margin: 0;
+        overflow: hidden;
+      }
+      .bg-dots-pattern {
+        background-image: radial-gradient(#27272a 1px, transparent 1px);
+        background-size: 24px 24px;
+      }
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #27272a;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #3f3f46;
+      }
+    </style>
+  </head>
+  <body class="bg-dots-pattern">
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
