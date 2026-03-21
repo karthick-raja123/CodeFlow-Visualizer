@@ -14,14 +14,16 @@ import threading
 
 app = FastAPI(title="CodeFlow API")
 
-# CORS — allow localhost + deployed frontend
+# CORS — allow localhost in development, any origin in production
 ALLOWED_ORIGINS = os.getenv(
-    "ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000"
-).split(",")
+    "ALLOWED_ORIGINS", ["http://localhost:5173", "http://localhost:3000"]
+)
+if isinstance(ALLOWED_ORIGINS, str):
+    ALLOWED_ORIGINS = ALLOWED_ORIGINS.split(",")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
+    allow_origins=ALLOWED_ORIGINS if ALLOWED_ORIGINS != ["*"] else ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -164,3 +166,15 @@ async def trace(req: CodeRequest):
 @app.post("/explain")
 async def explain(req: ExplainRequest):
     return explain_step(req.code, req.step_data, req.prev_step)
+
+
+# ── Main Entry Point ──────────────────────────────────
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=10000,
+        reload=False,
+        log_level="info"
+    )
