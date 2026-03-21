@@ -1,52 +1,70 @@
 /**
  * API service for code execution.
- * Connects to the FastAPI backend at /execute.
- * Falls back to mock if the backend is unreachable.
+ * Connects to the FastAPI backend at /api/execute.
+ * Supports both local development and Vercel serverless deployment.
  */
 
-const API_BASE = 'http://localhost:8000';
+// Use relative /api path for serverless, or localhost for development
+const API_BASE = process.env.VITE_API_URL || '/api';
 
 // ── Real API call ────────────────────────────────────
-async function callBackend(code, language) {
-  const res = await fetch(`${API_BASE}/execute`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ code, language }),
-  });
+async function callBackend(code, language, input_data = '') {
+  try {
+    const endpoint = `${API_BASE}/execute`;
+    console.log(`[API] Calling ${endpoint}`);
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || `Server error: ${res.status}`);
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, input_data }),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || `Server error: ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    // Handle serverless response format
+    return {
+      success: !data.error,
+      output: data.output || '',
+      error: data.error || '',
+      status: data.status || 'success',
+      executionTime: data.execution_time,
+      steps: data.steps || [],
+      trace: data.trace || [],
+      traceExceeded: data.trace_exceeded || false,
+    };
+  } catch (err) {
+    console.error('[API] Error:', err);
+    return {
+      success: false,
+      output: '',
+      error: err.message || 'Failed to connect to backend',
+      status: 'error',
+    };
   }
-
-  const data = await res.json();
-
-  // Normalize snake_case → camelCase for frontend
-  return {
-    success: data.success,
-    output: data.output,
-    error: data.error,
-    executionTime: data.execution_time,
-    steps: data.steps,
-    trace: data.trace || [],
-    traceExceeded: data.trace_exceeded || false,
-  };
 }
 
 /**
  * Get AI explanation for a specific step.
  */
 export async function getExplanation(code, stepData, prevStep = null) {
-  const res = await fetch(`${API_BASE}/explain`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ code, step_data: stepData, prev_step: prevStep }),
-  });
+  const endpoint = `${API_BASE}/explain`;
+  
+  try {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, step_data: stepData, prev_step: prevStep }),
+    });
 
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || `Server error: ${res.status}`);
-  }
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(text || `Server error: ${res.status}`);
+    }
 
   return await res.json();
 }
