@@ -176,28 +176,161 @@ Python-Visualizer/
 │   ├── executor.py       # Popen-based code runner
 │   ├── explainer.py      # AI explanation engine
 │   ├── tracer.py         # Step tracing module
-│   └── requirements.txt  # Python dependencies
+│   ├── flow_analyzer.py  # Flow diagram generation
+│   ├── database.py       # Database models (future)
+│   ├── requirements.txt  # Python dependencies
+│   └── README.md         # Backend documentation
 ├── src/
 │   ├── App.jsx           # Main React component
 │   ├── index.css         # Tailwind + theme styles
 │   ├── main.jsx          # React entry point
-│   ├── context/
-│   │   └── ThemeContext.jsx
-│   └── components/
-│       ├── MemoryPanel.jsx
-│       ├── FlowDiagram.jsx
-│       └── ExplanationPanel.jsx
-├── .env.example
-├── .gitignore
-├── vercel.json
-├── render.yaml
-├── package.json
-├── vite.config.js
-├── LICENSE
-└── README.md
+│   ├── context/          # Global state
+│   ├── components/       # Reusable UI components
+│   └── services/         # API communication
+├── public/               # Static assets
+├── .env.example          # Environment template
+├── .gitignore            # Git exclusions
+├── vercel.json           # Vercel config
+├── render.yaml           # Render deployment config
+├── package.json          # Node dependencies
+├── vite.config.js        # Vite configuration
+├── eslint.config.js      # ESLint rules
+├── LICENSE               # MIT License
+└── README.md             # This file
 ```
 
 ---
+
+## 🎓 Examples
+
+### Basic Execution
+```python
+x = 5
+y = 10
+print(x + y)
+```
+
+### With Traces
+```python
+numbers = [1, 2, 3]
+for i in numbers:
+    print(i * 2)
+```
+
+### With Input
+```python
+name = input("Enter name: ")
+print(f"Hello, {name}!")
+```
+
+---
+
+## 📸 Screenshots
+
+*(Placeholders — Add actual screenshots here)*
+- **Code Editor & Output** - Main interface with Monaco editor
+- **Memory Visualization** - Variables panel showing state changes
+- **Flow Diagram** - Execution flow visualization
+- **AI Explanations** - Step-by-step code explanations
+
+---
+
+## 🚀 Future Improvements
+
+- [ ] **Debugger Breakpoints** - Set breakpoints and pause execution
+- [ ] **Recursion Visualization** - Visual call stack for recursive functions
+- [ ] **Variable History** - Timeline of variable changes
+- [ ] **Code Snippets Library** - Pre-built example programs
+- [ ] **Collaborative Mode** - Real-time code sharing
+- [ ] **Multi-language Support** - JavaScript, Java, C++ execution
+- [ ] **Performance Analytics** - Execution time profiling
+- [ ] **Mobile App** - Native mobile version
+- [ ] **GPU Acceleration** - Large dataset visualization
+- [ ] **Export Features** - Save traces as PDF/JSON
+
+---
+
+## 🐛 Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| "Port already in use" | Change port: `--port 8001` |
+| "Module not found" | Run `pip install -r backend/requirements.txt` |
+| "API not responding" | Check backend is running on `http://localhost:8000` |
+| "CORS error" | Verify `ALLOWED_ORIGINS` in backend `.env` |
+| "Infinite loop timeout" | Code exceeded 10-second limit; optimize logic |
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please:
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** changes (`git commit -m 'feat: add amazing feature'`)
+4. **Push** to branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
+6. Follow the **commit message convention** below
+
+### Commit Message Convention
+```
+feat:  New feature (e.g., feat: add dark mode)
+fix:   Bug fix (e.g., fix: resolve timeout issue)
+docs:  Documentation (e.g., docs: update README)
+chore: Maintenance (e.g., chore: update dependencies)
+test:  Tests (e.g., test: add unit tests)
+```
+
+---
+
+## 📞 Support & Issues
+
+- 🐛 **Bug Reports**: [Open an Issue](https://github.com/karthick-raja123/Python-Visualizer/issues)
+- 💡 **Feature Requests**: [Discuss Ideas](https://github.com/karthick-raja123/Python-Visualizer/discussions)
+- 📧 **Contact**: Reach out to [@karthick-raja123](https://github.com/karthick-raja123)
+
+---
+
+## 📚 Resources
+
+- [Python Docs](https://docs.python.org/3/)
+- [FastAPI Docs](https://fastapi.tiangolo.com/)
+- [React Docs](https://react.dev/)
+- [Vite Guide](https://vitejs.dev/guide/)
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see [LICENSE](LICENSE) file for details.
+
+```
+MIT License | Copyright (c) 2026 Karthick Raja
+Permission granted for personal, commercial, and private use.
+```
+
+---
+
+## 🙏 Acknowledgments
+
+- **Inspired by**: [Thonny](https://thonny.org/), [Python Tutor](https://pythontutor.com/), VSCode
+- **Built with**: React, FastAPI, Tailwind CSS
+- **Icons**: [Lucide Icons](https://lucide.dev/)
+
+---
+
+## 📊 Project Stats
+
+![GitHub stars](https://img.shields.io/github/stars/karthick-raja123/Python-Visualizer?style=social)
+![GitHub forks](https://img.shields.io/github/forks/karthick-raja123/Python-Visualizer?style=social)
+![GitHub watchers](https://img.shields.io/github/watchers/karthick-raja123/Python-Visualizer?style=social)
+
+---
+
+**Made with ❤️ by [@karthick-raja123](https://github.com/karthick-raja123)**
+
+⭐ **Found this helpful? Please star this repository!**
+
 
 ## 🔮 Future Improvements
 
