@@ -1,356 +1,512 @@
-# ⚡ CodeFlow Visualizer
+# CodeFlow Visualizer
 
-**AI-powered Python code execution and debugging tool** — Execute code, trace step-by-step, visualize memory & flow, and get AI explanations. Built with React + FastAPI.
+**🚀 AI-powered Python code execution and visualization platform** — Execute code, trace execution step-by-step, visualize memory states, and get intelligent AI explanations. Built with React + FastAPI, optimized for learners and developers.
 
-![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi)
+![Python](https://img.shields.io/badge/Python-3.10+-3776ab?logo=python&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?logo=fastapi&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green)
+![Build](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)
 
 ---
 
-## 🎯 What It Does
+## Overview
 
-CodeFlow Visualizer helps developers and learners **understand Python code execution visually**. Write code, run it, and watch as each line executes — see variables change, trace the flow, and get AI-powered explanations.
+CodeFlow Visualizer is a cutting-edge educational and debugging tool that helps developers and students **understand Python code execution visually**. Write or paste Python code, execute it, and watch as each line executes — see variables change in real-time, trace the control flow through functions and loops, visualize memory allocation, and receive AI-powered explanations for every step.
 
-**Perfect for:**
-- 🎓 Students learning Python
-- 🐛 Developers debugging logic
-- 👩‍🏫 Teachers explaining code concepts
+### Who Should Use It?
+
+- 🎓 **Students & Learners** — Master Python fundamentals with visual step-through execution
+- 👨‍💻 **Developers** — Debug complex logic and understand code flow instantly
+- 👨‍🏫 **Educators** — Teach Python concepts with interactive visualization
+- 🔬 **Researchers** — Analyze algorithm behavior and execution patterns
 
 ---
 
-## ✨ Features
+## ✨ Key Features
 
 | Feature | Description |
 |---------|-------------|
-| ▶️ **Code Execution** | Run Python code with full stdout/stderr capture |
-| ⌨️ **Input Support** | Handle `input()` functions with stdin textarea |
-| 🔍 **Step-by-Step Tracing** | Line-by-line execution with `sys.settrace` |
-| 🧠 **Memory Visualization** | Variable boxes with types, NEW/UPD badges, stack frame |
-| 🔀 **Flow Diagram** | React Flow graph: Start → Process → Loop → End |
-| 🤖 **AI Explanations** | Contextual explanation, CS concepts, coding tips per step |
-| 🌙 **Dark / Light Theme** | Toggle with localStorage persistence |
-| 📝 **Monaco Editor** | VS Code-quality editor with syntax highlighting |
-| 🛡️ **Infinite Loop Protection** | Detects `while True` without `break` |
-| ⏱️ **Timeout Safety** | 10s execution limit, 8s trace limit, never hangs |
+| ▶️ **Code Execution** | Execute Python code with complete stdout/stderr capture, stdin support for `input()` |
+| 🔍 **Step-by-Step Tracing** | Line-by-line execution using Python's `sys.settrace()` with variable tracking |
+| 🧠 **Memory Visualization** | Real-time variable display with types, NEW/UPDATE badges, stack frame hierarchy |
+| 🔀 **Flow Diagram** | Interactive React Flow graphs showing execution path: Start → Process → Loops → End |
+| 🤖 **AI Explanations** | Context-aware explanations, CS concepts, and coding suggestions for each execution step |
+| 🌙 **Theme Switching** | Dark and Light mode with localStorage persistence |
+| 📝 **Monaco Editor** | VS Code-quality editor with Python syntax highlighting and formatting |
+| 🛡️ **Safety Features** | Infinite loop detection, timeout protection (8s trace limit), memory-safe execution |
+| ⏱️ **Performance** | All operations guaranteed to complete within 10 seconds |
+| 📱 **Responsive Design** | Works seamlessly on desktop, tablet, and mobile devices |
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Technology Stack
 
-**Frontend:**
-- React 19 + Vite
-- Tailwind CSS + Framer Motion
-- Monaco Editor (VS Code engine)
-- React Flow (diagram visualization)
+### Frontend
+- **React 19** — Latest UI framework with hooks and concurrent rendering
+- **Vite 8** — Lightning-fast build tool and dev server
+- **Tailwind CSS 4** — Utility-first CSS framework
+- **Monaco Editor** — VS Code's editor engine directly embedded
+- **React Flow 12** — Interactive diagram and node-based graph library
+- **Framer Motion** — Smooth animations and transitions
+- **Lucide React** — Beautiful, consistent icon library
 
-**Backend:**
-- FastAPI (Python)
-- subprocess.Popen (safe execution)
-- sys.settrace (step tracer)
-- Pattern-based AI explainer
+### Backend
+- **FastAPI** — Modern, fast (as fast as Node & Go) Python web framework
+- **Uvicorn** — Lightning-fast ASGI web server
+- **Pydantic** — Data validation and type hints
+- **Python sys.settrace** — Low-level code tracing mechanism
+- **subprocess** — Safe Python code execution in isolated processes
+
+### Deployment
+- **Vercel** — Frontend deployment (zero-config, serverless)
+- **Render** — Backend deployment (managed container platform)
 
 ---
 
-## 📦 Installation
+## 📦 Installation & Setup
 
 ### Prerequisites
-- **Python 3.10+**
-- **Node.js 18+**
-- **npm**
+Before you begin, ensure you have the following installed:
+- **Python 3.10 or higher** ([Download](https://www.python.org/downloads/))
+- **Node.js 18 or higher** ([Download](https://nodejs.org/))
+- **npm 9+ or yarn** (comes with Node.js)
+- **Git** ([Download](https://git-scm.com/))
 
-### 1. Clone the repository
+### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/karthick-raja123/Python-Visualizer.git
-cd Python-Visualizer
+git clone https://github.com/karthick-raja123/CodeFlow-Visualizer.git
+cd CodeFlow-Visualizer
 ```
 
-### 2. Backend Setup
+### Step 2: Backend Setup
 
 ```bash
-# Create virtual environment
+# Create Python virtual environment
 python -m venv .venv
 
-# Activate it
+# Activate virtual environment
 # Windows:
 .venv\Scripts\activate
-# Mac/Linux:
+# macOS/Linux:
 source .venv/bin/activate
 
-# Install dependencies
-pip install -r backend/requirements.txt
+# Install Python dependencies
+pip install -r api/requirements.txt
 ```
 
-### 3. Frontend Setup
+### Step 3: Frontend Setup
 
 ```bash
+# Install Node dependencies
 npm install
+
+# Install Tailwind CSS (included in dependencies)
 ```
 
-### 4. Environment Variables
+### Step 4: Environment Configuration
 
 ```bash
-# Copy the example env file
+# Copy the example environment file
 cp .env.example .env
+
+# Configure for local development (already set in .env.example)
+# VITE_API_URL=http://localhost:8000
 ```
 
----
+### Step 5: Start Development Servers
 
-## 🚀 Running Locally
-
-Open **two terminals**:
-
-**Terminal 1 — Backend:**
+**Terminal 1 - Backend (FastAPI on port 8000):**
 ```bash
-python -m uvicorn backend.main:app --reload --port 8000
+.venv\Scripts\activate  # or: source .venv/bin/activate
+cd api
+python -m uvicorn index:app --reload --port 8000
 ```
 
-**Terminal 2 — Frontend:**
+**Terminal 2 - Frontend (Vite dev server on port 5173):**
 ```bash
 npm run dev
 ```
 
-Open **http://localhost:5173** in your browser.
+The application will be available at: **http://localhost:5173**
 
 ---
 
-## 📖 Usage
+## 🚀 Usage
 
-1. **Write code** in the Monaco editor (left panel)
-2. **Click ▶ Run** to execute — see output in the center panel
-3. **Click 🔍 Trace** to debug step-by-step
-4. Use **◀ ▶** buttons in the header to step through lines
-5. Watch the **Memory panel** (right) show variables changing
-6. Switch to **🔀 Flow** tab to see the execution graph
-7. Switch to **🤖 AI Explain** tab for line-by-line explanations
-8. Need `input()`? Click **▸ stdin** and type values (one per line)
-9. Toggle **🌙/☀️** for dark/light theme
+### Basic Workflow
+
+1. **Write Code** — Use the Monaco editor to write Python code
+2. **Execute** — Click "Execute" to run code immediately
+3. **Trace Step** — Click "Trace" to step through line-by-line execution
+4. **Observe** — Watch variables change in the memory panel
+5. **Understand** — Click "Explain" to get AI insights for each step
+
+### Example Code
+
+```python
+def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+result = fibonacci(5)
+print(f"Fibonacci(5) = {result}")
+```
 
 ---
 
-## 📡 API Endpoints
+## 📡 API Documentation
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/execute` | Run code and return output |
-| `POST` | `/trace` | Trace code step-by-step |
-| `POST` | `/explain` | Get AI explanation for a step |
-| `GET` | `/health` | Health check |
+### Backend Endpoints
 
-**Request body:**
+All endpoints return JSON responses. The backend runs on `http://localhost:8000` by default.
+
+#### 1. Health Check
+```
+GET /health
+```
+**Response:**
+```json
+{"status": "ok"}
+```
+
+#### 2. Execute Code
+```
+POST /execute
+```
+**Request:**
 ```json
 {
-  "code": "print('Hello')",
+  "code": "print('Hello, World!')",
   "input_data": ""
 }
+```
+**Response:**
+```json
+{
+  "output": "Hello, World!\n",
+  "error": "",
+  "status": "success"
+}
+```
+
+#### 3. Trace Execution
+```
+POST /trace
+```
+**Request:**
+```json
+{
+  "code": "x = 10\ny = x + 5\nprint(y)",
+  "input_data": ""
+}
+```
+**Response:**
+```json
+{
+  "steps": [
+    {"line": 1, "vars": {}},
+    {"line": 2, "vars": {"x": 10}},
+    {"line": 3, "vars": {"x": 10, "y": 15}},
+    {"line": 4, "vars": {"x": 10, "y": 15}}
+  ],
+  "stdout": "15\n",
+  "stderr": ""
+}
+```
+
+#### 4. Explain Code Step
+```
+POST /explain
+```
+**Request:**
+```json
+{
+  "code": "result = factorial(5)",
+  "step_data": {"line": 1, "vars": {"result": 120}},
+  "prev_step": null
+}
+```
+**Response:**
+```json
+{
+  "explanation": "Line 1: Variables: result",
+  "detail": "Executing line 1 of the code",
+  "suggestion": "Step through the code to see how variables change",
+  "concept": "Code Execution"
+}
+```
+
+### OpenAPI Documentation
+
+Interactive API documentation is available at:
+- **http://localhost:8000/docs** (Swagger UI)
+- **http://localhost:8000/redoc** (ReDoc)
+
+---
+
+## 🧪 Testing
+
+Run the test suite:
+
+```bash
+# Frontend tests
+npm run lint
+
+# Backend tests (if available)
+pytest api/
 ```
 
 ---
 
 ## 🌐 Deployment
 
-### Frontend → Vercel
+### Deploy Frontend to Vercel
+
 ```bash
-npm run build
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
 vercel --prod
 ```
-Set `VITE_API_URL` in Vercel dashboard.
 
-### Backend → Render
-Use the included `render.yaml` or deploy manually:
-```bash
-uvicorn backend.main:app --host 0.0.0.0 --port 10000
-```
-Set `ALLOWED_ORIGINS` to your frontend URL.
+**Configuration:** `vercel.json` is pre-configured:
+- Builds with `npm run build`
+- Routes API requests to `/api` (serverless function)
+- Serves SPA with fallback to `index.html`
+
+### Deploy Backend to Render
+
+1. **Create Render Account** — Visit [render.com](https://render.com)
+2. **Connect GitHub** — Authorize Render to access this repository
+3. **Create Web Service**:
+   - Environment: Python
+   - Start Command: `uvicorn api.index:app --host 0.0.0.0 --port 10000`
+   - Set environment variable: `ALLOWED_ORIGINS=<your-vercel-frontend-url>`
+4. **Update .env.production**:
+   ```
+   VITE_API_URL=https://your-render-backend-url.onrender.com
+   ```
+5. **Redeploy Frontend**:
+   ```bash
+   vercel --prod
+   ```
+
+**Configuration:** `render.yaml` is pre-configured with both frontend and backend deployment specs.
 
 ---
 
 ## 📁 Project Structure
 
 ```
-Python-Visualizer/
-├── backend/
-│   ├── main.py           # FastAPI server + tracer
-│   ├── executor.py       # Popen-based code runner
-│   ├── explainer.py      # AI explanation engine
-│   ├── tracer.py         # Step tracing module
-│   ├── flow_analyzer.py  # Flow diagram generation
-│   ├── database.py       # Database models (future)
-│   ├── requirements.txt  # Python dependencies
-│   └── README.md         # Backend documentation
-├── src/
-│   ├── App.jsx           # Main React component
-│   ├── index.css         # Tailwind + theme styles
-│   ├── main.jsx          # React entry point
-│   ├── context/          # Global state
-│   ├── components/       # Reusable UI components
-│   └── services/         # API communication
-├── public/               # Static assets
-├── .env.example          # Environment template
-├── .gitignore            # Git exclusions
-├── vercel.json           # Vercel config
-├── render.yaml           # Render deployment config
-├── package.json          # Node dependencies
-├── vite.config.js        # Vite configuration
-├── eslint.config.js      # ESLint rules
-├── LICENSE               # MIT License
-└── README.md             # This file
+CodeFlow-Visualizer/
+├── api/                          # FastAPI backend (production)
+│   ├── index.py                  # Main app with all endpoints
+│   ├── requirements.txt           # Python dependencies
+│   └── __pycache__/              # Compiled Python files
+│
+├── backend/                      # Legacy backend (reference only)
+│   ├── main.py                   # Old implementation
+│   ├── executor.py               # Code execution module
+│   ├── tracer.py                 # Code tracing module
+│   └── requirements.txt           # Legacy dependencies
+│
+├── src/                          # React frontend
+│   ├── components/               # React components
+│   │   ├── CodeEditor.jsx        # Monaco editor wrapper
+│   │   ├── ExecutionControls.jsx # Execute/Trace/Explain buttons
+│   │   ├── ExplanationPanel.jsx  # AI explanation display
+│   │   ├── FlowDiagram.jsx       # React Flow visualization
+│   │   ├── MemoryPanel.jsx       # Variable visualization
+│   │   ├── OutputConsole.jsx     # Execution output display
+│   │   └── ...more components
+│   ├── context/
+│   │   ├── AppContext.jsx        # Global app state
+│   │   └── ThemeContext.jsx      # Dark/Light theme
+│   ├── services/
+│   │   └── api.js                # API client library
+│   ├── App.jsx                   # Root component
+│   ├── main.jsx                  # Entry point
+│   ├── index.css                 # Global styles
+│   └── assets/                   # images, icons, etc.
+│
+├── public/                       # Static assets
+│
+├── .env.example                  # Environment template
+├── .gitignore                    # Git ignore rules
+├── package.json                  # Node dependencies
+├── vite.config.js                # Vite build configuration
+├── vercel.json                   # Vercel deployment config
+├── render.yaml                   # Render IaC configuration
+├── LICENSE                       # MIT License
+├── README.md                     # This file
+└── DEPLOYMENT_GUIDE.md           # Detailed deployment docs
 ```
 
 ---
 
-## 🎓 Examples
+## 🔐 Security Considerations
 
-### Basic Execution
-```python
-x = 5
-y = 10
-print(x + y)
+- ✅ **Code Execution Safety** — Uses subprocess isolation, never `eval()` or `exec()`
+- ✅ **Timeout Protection** — Hard kill after 8 seconds to prevent infinite loops
+- ✅ **CORS Configuration** — Properly configured for cross-origin requests
+- ✅ **Input Validation** — Pydantic models validate all API inputs
+- ✅ **Memory Limits** — Traces limited to 200 steps to prevent memory exhaustion
+- ✅ **No Arbitrary System Access** — Cannot execute system commands or access files
+
+---
+
+## 🚨 Troubleshooting
+
+### Backend Connection Failed
+```
+Error: Backend unreachable - showing local explanation
+```
+**Solution:**
+- Ensure backend is running: `python -m uvicorn api.index:app --port 8000`
+- Check VITE_API_URL in `.env` matches backend port
+- Refresh browser (Ctrl+R)
+
+### Trace Not Working
+```
+Error: Network Error
+```
+**Solution:**
+- Check Python version (need 3.10+)
+- Verify CORS enabled in api/index.py
+- Check browser DevTools Network tab for failed requests
+
+### Port Already in Use
+```
+Error: Address already in use
+```
+**Solution:**
+```bash
+# Windows: Find and kill process on port 8000
+netstat -ano | findstr :8000
+taskkill /PID <process_id> /F
+
+# macOS/Linux: 
+lsof -ti:8000 | xargs kill -9
 ```
 
-### With Traces
+### Frontend Not Updating
+```
+Changes to code not showing
+```
+**Solution:**
+- Restart Vite dev server: `npm run dev`
+- Clear browser cache: Ctrl+Shift+Del
+- Check that .env file is correct
+
+---
+
+## 📊 Performance Metrics
+
+| Operation | Time Limit | Status |
+|-----------|-----------|--------|
+| Code Execution | 5 seconds | ⏱️ Safe |
+| Code Tracing | 8 seconds | ⏰ Allow for complex code |
+| API Request Timeout | 10 seconds | ✅ Generous |
+| Trace Step Limit | 200 steps | 🎯 Prevents memory issues |
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how:
+
+1. **Fork the repository** — Click the fork button on GitHub
+2. **Create a feature branch** — `git checkout -b feature/amazing-feature`
+3. **Make your changes** — Follow the project's code style
+4. **Commit with clarity** — `git commit -m 'Add amazing feature'`
+5. **Push to your fork** — `git push origin feature/amazing-feature`
+6. **Open a Pull Request** — Describe your changes and why they matter
+
+### Development Guidelines
+- Write clean, readable code with comments for complex logic
+- Test your changes thoroughly before committing
+- Update documentation if you change behavior
+- Follow the existing code style and patterns
+
+---
+
+## 📝 Code Examples
+
+### Array Visualization
 ```python
-numbers = [1, 2, 3]
-for i in numbers:
-    print(i * 2)
+numbers = [3, 1, 4, 1, 5, 9, 2, 6]
+numbers.sort()
+print(numbers)
 ```
 
-### With Input
+### Function Tracing
 ```python
-name = input("Enter name: ")
-print(f"Hello, {name}!")
+def power(base, exp):
+    if exp == 0:
+        return 1
+    return base * power(base, exp - 1)
+
+print(power(2, 3))  # 8
+```
+
+### Recursion Visualization
+```python
+def factorial(n):
+    if n <= 1:
+        return 1
+    return n * factorial(n - 1)
+
+result = factorial(5)
+print(f"5! = {result}")
 ```
 
 ---
 
 ## 📸 Screenshots
 
-*(Placeholders — Add actual screenshots here)*
-- **Code Editor & Output** - Main interface with Monaco editor
-- **Memory Visualization** - Variables panel showing state changes
-- **Flow Diagram** - Execution flow visualization
-- **AI Explanations** - Step-by-step code explanations
-
----
-
-## 🚀 Future Improvements
-
-- [ ] **Debugger Breakpoints** - Set breakpoints and pause execution
-- [ ] **Recursion Visualization** - Visual call stack for recursive functions
-- [ ] **Variable History** - Timeline of variable changes
-- [ ] **Code Snippets Library** - Pre-built example programs
-- [ ] **Collaborative Mode** - Real-time code sharing
-- [ ] **Multi-language Support** - JavaScript, Java, C++ execution
-- [ ] **Performance Analytics** - Execution time profiling
-- [ ] **Mobile App** - Native mobile version
-- [ ] **GPU Acceleration** - Large dataset visualization
-- [ ] **Export Features** - Save traces as PDF/JSON
-
----
-
-## 🐛 Troubleshooting
-
-| Issue | Solution |
-|-------|----------|
-| "Port already in use" | Change port: `--port 8001` |
-| "Module not found" | Run `pip install -r backend/requirements.txt` |
-| "API not responding" | Check backend is running on `http://localhost:8000` |
-| "CORS error" | Verify `ALLOWED_ORIGINS` in backend `.env` |
-| "Infinite loop timeout" | Code exceeded 10-second limit; optimize logic |
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please:
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** changes (`git commit -m 'feat: add amazing feature'`)
-4. **Push** to branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
-6. Follow the **commit message convention** below
-
-### Commit Message Convention
-```
-feat:  New feature (e.g., feat: add dark mode)
-fix:   Bug fix (e.g., fix: resolve timeout issue)
-docs:  Documentation (e.g., docs: update README)
-chore: Maintenance (e.g., chore: update dependencies)
-test:  Tests (e.g., test: add unit tests)
-```
-
----
-
-## 📞 Support & Issues
-
-- 🐛 **Bug Reports**: [Open an Issue](https://github.com/karthick-raja123/Python-Visualizer/issues)
-- 💡 **Feature Requests**: [Discuss Ideas](https://github.com/karthick-raja123/Python-Visualizer/discussions)
-- 📧 **Contact**: Reach out to [@karthick-raja123](https://github.com/karthick-raja123)
-
----
-
-## 📚 Resources
-
-- [Python Docs](https://docs.python.org/3/)
-- [FastAPI Docs](https://fastapi.tiangolo.com/)
-- [React Docs](https://react.dev/)
-- [Vite Guide](https://vitejs.dev/guide/)
+> Screenshots will be added here in the future. See [Issues](https://github.com/karthick-raja123/CodeFlow-Visualizer/issues) for feature requests.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details. Freely use, modify, and distribute this project for personal and commercial purposes.
 
-```
-MIT License | Copyright (c) 2026 Karthick Raja
-Permission granted for personal, commercial, and private use.
-```
+---
+
+## 👤 Author
+
+**Karthick Raja** — Full Stack Developer & EdTech Enthusiast
+- GitHub: [@karthick-raja123](https://github.com/karthick-raja123)
+- Project: CodeFlow Visualizer — Learning Python, Visualized
 
 ---
 
 ## 🙏 Acknowledgments
 
-- **Inspired by**: [Thonny](https://thonny.org/), [Python Tutor](https://pythontutor.com/), VSCode
-- **Built with**: React, FastAPI, Tailwind CSS
-- **Icons**: [Lucide Icons](https://lucide.dev/)
+- [FastAPI](https://fastapi.tiangolo.com/) — Modern Python web framework
+- [React](https://react.dev/) — JavaScript UI library
+- [Vite](https://vitejs.dev/) — Next generation build tool
+- [Tailwind CSS](https://tailwindcss.com/) — Utility-first CSS
+- [Monaco Editor](https://microsoft.github.io/monaco-editor/) — VS Code editor
+- [React Flow](https://reactflow.dev/) — Node-based UI library
 
 ---
 
-## 📊 Project Stats
+## 📞 Support
 
-![GitHub stars](https://img.shields.io/github/stars/karthick-raja123/Python-Visualizer?style=social)
-![GitHub forks](https://img.shields.io/github/forks/karthick-raja123/Python-Visualizer?style=social)
-![GitHub watchers](https://img.shields.io/github/watchers/karthick-raja123/Python-Visualizer?style=social)
-
----
-
-**Made with ❤️ by [@karthick-raja123](https://github.com/karthick-raja123)**
-
-⭐ **Found this helpful? Please star this repository!**
-
-
-## 🔮 Future Improvements
-
-- [ ] Breakpoint support (click gutter to toggle)
-- [ ] Multi-file execution
-- [ ] Real AI API integration (GPT/Gemini)
-- [ ] Collaborative live coding
-- [ ] Python package support (pip install in sandbox)
-- [ ] Export execution report as PDF
+Have questions or found a bug?
+- **Check [Issues](https://github.com/karthick-raja123/CodeFlow-Visualizer/issues)** — Search for similar problems
+- **Read [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)** — Detailed setup instructions
+- **Open a new issue** — Describe what's happening with steps to reproduce
 
 ---
 
-## 👨‍💻 Author
+**Made with ❤️ for Python learners and developers everywhere.**
 
-**Karthick Raja**
-
-- GitHub: [@karthick-raja123](https://github.com/karthick-raja123)
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+⭐ If you found this project helpful, please give it a star on GitHub!

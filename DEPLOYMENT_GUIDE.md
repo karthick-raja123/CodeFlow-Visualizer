@@ -120,6 +120,9 @@ FASTAPI_PORT=8000
 
 # Frontend
 VITE_API_URL=http://localhost:8000
+VITE_API_PREFIX=
+VITE_API_TIMEOUT=10000
+VITE_ENABLE_SESSIONS=false
 
 # CORS
 ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000
@@ -194,6 +197,22 @@ git push origin main
 
 ## 🚀 Production Deployment Steps
 
+> **Optional frontend envs**
+> - `VITE_API_PREFIX` — set to `/api` when deploying behind a proxy such as Vercel edge functions. Leave blank for direct FastAPI usage.
+> - `VITE_API_TIMEOUT` — client timeout (ms) for all API requests. Defaults to `10000`.
+> - `VITE_ENABLE_SESSIONS` — keep `false` until the `/sessions` endpoints are implemented server-side.
+
+---
+
+## 🛡️ Backend Fallback & Mock Mode
+
+- The frontend now auto-detects the correct API origin. If `VITE_API_URL` is missing, localhost (`http://localhost:8000`) is used during dev and the page origin is used in production. When the app is served from `*.vercel.app`, it automatically adds the `/api` prefix so calls route to Vercel serverless functions.
+- Every request enforces a shared timeout (`VITE_API_TIMEOUT`). When the FastAPI backend is offline or returns 404, the UI falls back to a deterministic mock execution so demos keep working. A banner is logged in the console: `[CodeFlow] Backend unreachable, using mock response`.
+- To disable the mock fallback, simply keep the backend reachable (recommended for production). The moment a healthy response is returned, the mock path is bypassed automatically.
+- Session APIs (`/sessions`) stay guarded behind `VITE_ENABLE_SESSIONS` so that the UI only attempts persistence when the backend exposes those endpoints.
+
+---
+
 ### Step 1: Verify Locally
 ```bash
 # Backend
@@ -202,7 +221,11 @@ python -m uvicorn backend.main:app --reload --port 8000
 # Frontend (new terminal)
 npm run dev
 ```
-Test at `http://localhost:5173`
+Validation checklist:
+- Visit `http://localhost:5173` and run a snippet (e.g., `print("hello")`).
+- Confirm the Network tab shows requests to `http://localhost:8000/execute` and `http://localhost:8000/trace` (no `/api` prefix for local dev).
+- Hit `http://localhost:8000/health` to ensure the FastAPI service reports `{"status":"ok"}`.
+- Confirm any backend errors surface in the in-app banner instead of generic `Connection failed` messages.
 
 ### Step 2: Create Production Build
 ```bash
@@ -237,7 +260,7 @@ Connect GitHub repo and set configuration in Render dashboard
 
 ### Step 8: Test Production
 - Visit production frontend URL
-- Verify API connectivity
+- Verify API connectivity (check `/health` or `/docs` on the backend host)
 - Test code execution
 - Check error logs
 
@@ -267,6 +290,11 @@ npm install
 
 ### CORS Errors
 Check `ALLOWED_ORIGINS` in `backend/.env`
+
+### Backend Falling Back to Mock Responses
+- Ensure `VITE_API_URL` matches the deployed FastAPI/Render URL exactly (include https scheme)
+- For Vercel frontend + Render backend combos, set `VITE_API_PREFIX=/api` only when routing through the serverless wrapper. Leave it blank when calling Render directly.
+- Watch the browser console for `[CodeFlow API] request ...` logs; these indicate which endpoint failed.
 
 ### Build Errors
 ```bash

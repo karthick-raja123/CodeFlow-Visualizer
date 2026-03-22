@@ -1,12 +1,7 @@
-"""
-CodeFlow Visualizer - Vercel Serverless Backend
-FastAPI application for executing and tracing Python code.
-Deployed as serverless function on Vercel.
-"""
-
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+from typing import Optional
 import subprocess
 import tempfile
 import os
@@ -14,226 +9,200 @@ import sys
 import io
 import threading
 
-# Initialize FastAPI app
-app = FastAPI(title="CodeFlow Serverless API")
+TRACE_MAX_STEPS = 200
+TRACE_TIMEOUT = 8  # seconds
 
-# ── CORS Configuration ────────────────────────────────
-ALLOWED_ORIGINS = [
-    "https://your-frontend.vercel.app",  # Production
-    "http://localhost:5173",              # Development
-    "http://localhost:3000",              # Development
-    "http://127.0.0.1:5173",             # Development
-]
 
+def _safe_repr(value: object) -> str:
+    """Best-effort repr that never explodes and stays short."""
+    try:
+        text = repr(value)
+        return text if len(text) <= 100 else text[:97] + "..."
+    except Exception:
+        return "<unrepr>"
+
+
+app = FastAPI()
+
+# ✅ CORS FIX
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ── Request/Response Models ───────────────────────────
+# ✅ Request model
 class CodeRequest(BaseModel):
-    code: str = Field(..., max_length=10_000, description="Python code to execute")
-    input_data: str = Field(default="", max_length=10_000, description="Input for stdin")
+    code: str
+    input_data: str = ""
 
-
-class CodeResponse(BaseModel):
-    output: str = Field(description="Standard output")
-    error: str = Field(description="Standard error")
-    status: str = Field(default="success", description="Execution status")
-
-
-# ── Code Execution Function ───────────────────────────
-def run_code(code: str, input_data: str = "") -> tuple[str, str]:
-    """
-    Safely execute Python code in a subprocess.
-    
-    Args:
-        code: Python code string to execute
-        input_data: Input data for stdin
-    
-    Returns:
-        Tuple of (stdout, stderr)
-    """
-    try:
-        # Create temporary file with code
-        with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
-            f.write(code)
-            temp_filename = f.name
-
-        try:
-            # Execute code in subprocess with timeout
-            result = subprocess.run(
-                [sys.executable, temp_filename],
-                input=input_data,
-                capture_output=True,
-                text=True,
-                timeout=10  # 10 second timeout
-            )
-            
-            return result.stdout, result.stderr
-            
-        finally:
-            # Clean up temporary file
-            try:
-                os.unlink(temp_filename)
-            except:
-                pass
-    
-    except subprocess.TimeoutExpired:
-        return "", "Error: Code execution timeout (10 seconds)"
-    except Exception as e:
-        return "", f"Error: {type(e).__name__}: {str(e)}"
-
-
-# ── Health Check Endpoint ─────────────────────────────
-@app.get("/api/health")
-async def health():
-    """Health check endpoint for Vercel."""
-    return {"status": "ok", "service": "CodeFlow Serverless API"}
-
-
-# ── Execute Code Endpoint ─────────────────────────────
-@app.post("/api/execute")
-async def execute(req: CodeRequest) -> CodeResponse:
-    """
-    Execute Python code and return output.
-    
-    Endpoint: POST /api/execute
-    
-    Request body:
-    {
-        "code": "print('Hello')",
-        "input_data": ""
-    }
-    
-    Response:
-    {
-        "output": "Hello\\n",
-        "error": "",
-        "status": "success"
-    }
-    """
-    try:
-        # Check for infinite loops
-        if "while True" in req.code and "break" not in req.code:
-            return CodeResponse(
-                output="",
-                error="Error: Infinite loop detected (while True without break)",
-                status="error"
-            )
-        
-        if "while 1" in req.code and "break" not in req.code:
-            return CodeResponse(
-                output="",
-                error="Error: Infinite loop detected (while 1 without break)",
-                status="error"
-            )
-        
-        # Execute the code
-        stdout, stderr = run_code(req.code, req.input_data)
-        
-        return CodeResponse(
-            output=stdout,
-            error=stderr,
-            status="error" if stderr else "success"
-        )
-    
-    except Exception as e:
-        return CodeResponse(
-            output="",
-            error=f"Server error: {str(e)}",
-            status="error"
-        )
-
-
-# ── Trace Endpoint (Simplified) ───────────────────────
-class TraceRequest(BaseModel):
-    code: str = Field(..., max_length=10_000)
-    input_data: str = Field(default="")
-
-
-class TraceStep(BaseModel):
-    line: int
-    vars: dict
-
-
-class TraceResponse(BaseModel):
-    steps: list[TraceStep] = []
-    stdout: str = ""
-    stderr: str = ""
-    status: str = "success"
-
-
-@app.post("/api/trace")
-async def trace(req: TraceRequest) -> TraceResponse:
-    """
-    Trace code execution step-by-step (simplified for serverless).
-    Note: Full tracing requires more resources. This is a simplified version.
-    """
-    try:
-        # For serverless, we simplify to just execute
-        # Full tracing would require more compute time
-        stdout, stderr = run_code(req.code, req.input_data)
-        
-        return TraceResponse(
-            steps=[],  # Simplified: no step-by-step in serverless
-            stdout=stdout,
-            stderr=stderr,
-            status="error" if stderr else "success"
-        )
-    
-    except Exception as e:
-        return TraceResponse(
-            steps=[],
-            stdout="",
-            stderr=str(e),
-            status="error"
-        )
-
-
-# ── Root Endpoint ─────────────────────────────────────
+# ✅ Root / health check
 @app.get("/")
-async def root():
-    """Root endpoint - API information."""
-    return {
-        "name": "CodeFlow Visualizer - Serverless Backend",
-        "version": "1.0.0",
-        "platform": "Vercel",
-        "endpoints": {
-            "health": "GET /api/health",
-            "execute": "POST /api/execute",
-            "trace": "POST /api/trace",
-            "docs": "/api/docs"
+def root():
+    return {"status": "ok"}
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+# ✅ Execute code
+@app.post("/execute")
+def execute_code(req: CodeRequest):
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".py") as f:
+            f.write(req.code.encode())
+            filename = f.name
+
+        result = subprocess.run(
+            ["python", filename],
+            input=req.input_data,
+            text=True,
+            capture_output=True,
+            timeout=5
+        )
+
+        os.remove(filename)
+
+        return {
+            "output": result.stdout,
+            "error": result.stderr,
+            "status": "success"
         }
-    }
+
+    except Exception as e:
+        return {
+            "output": "",
+            "error": str(e),
+            "status": "error"
+        }
+
+def _run_trace(code: str, input_data: str, result_holder: dict):
+    steps = []
+    hit_limit = False
+    code_lines = code.splitlines()
+
+    stdout_capture = io.StringIO()
+    stderr_capture = io.StringIO()
+    old_stdout, old_stderr, old_stdin = sys.stdout, sys.stderr, sys.stdin
+    sys.stdout, sys.stderr = stdout_capture, stderr_capture
+    if input_data:
+        sys.stdin = io.StringIO(input_data)
+
+    def tracer(frame, event, arg):
+        nonlocal hit_limit
+        if frame.f_code.co_filename != "<user_code>":
+            return tracer
+        if event == "line":
+            if len(steps) >= TRACE_MAX_STEPS:
+                hit_limit = True
+                return None
+            locals_snapshot = {
+                name: _safe_repr(val)
+                for name, val in frame.f_locals.items()
+                if not name.startswith("__")
+            }
+            line_no = frame.f_lineno
+            line_text = code_lines[line_no - 1] if 0 < line_no <= len(code_lines) else ""
+            steps.append({
+                "line": line_no,
+                "code": line_text,
+                "vars": locals_snapshot,
+            })
+        return tracer
+
+    error_text = ""
+    try:
+        compiled = compile(code, "<user_code>", "exec")
+        exec_globals = {"__builtins__": __builtins__}
+        sys.settrace(tracer)
+        exec(compiled, exec_globals, exec_globals)
+    except Exception as exc:  # capture runtime errors inside tracer
+        error_text = f"{type(exc).__name__}: {exc}"
+    finally:
+        sys.settrace(None)
+        sys.stdout, sys.stderr = old_stdout, old_stderr
+        sys.stdin = old_stdin
+
+    stderr_output = error_text or stderr_capture.getvalue()
+    if hit_limit:
+        stderr_output = (stderr_output + "\n" if stderr_output else "") + f"Trace stopped: {TRACE_MAX_STEPS} step limit reached"
+
+    result_holder["steps"] = steps
+    result_holder["stdout"] = stdout_capture.getvalue()
+    result_holder["stderr"] = stderr_output.strip()
 
 
-# ── API Documentation Redirect ─────────────────────────
-@app.get("/api/docs")
-async def api_docs():
-    """
-    Redirect to interactive API documentation.
-    Visit /api/docs (Swagger UI) or /api/redoc (ReDoc)
-    """
+def trace_execution(code: str, input_data: str = "") -> dict:
+    if "while True" in code and "break" not in code:
+        return {"steps": [], "stdout": "", "stderr": "Error: Infinite loop detected (while True without break)."}
+    if "while 1" in code and "break" not in code:
+        return {"steps": [], "stdout": "", "stderr": "Error: Infinite loop detected (while 1 without break)."}
+
+    result = {"steps": [], "stdout": "", "stderr": ""}
+    worker = threading.Thread(target=_run_trace, args=(code, input_data, result), daemon=True)
+    worker.start()
+    worker.join(timeout=TRACE_TIMEOUT)
+
+    if worker.is_alive():
+        return {
+            "steps": result.get("steps", []),
+            "stdout": result.get("stdout", ""),
+            "stderr": "Trace stopped: execution timeout (8s). Code may contain an infinite loop.",
+        }
+
+    return result
+
+
+# ✅ Trace code
+@app.post("/trace")
+def trace_code(req: CodeRequest):
+    result = trace_execution(req.code, req.input_data)
+    status = "error" if result.get("stderr") else "success"
     return {
-        "message": "API Documentation available at:",
-        "swagger": "/api/docs",
-        "redoc": "/api/redoc"
+        "steps": result.get("steps", []),
+        "stdout": result.get("stdout", ""),
+        "stderr": result.get("stderr", ""),
+        "status": status,
     }
 
 
-# ── Error Handlers ────────────────────────────────────
-@app.exception_handler(Exception)
-async def exception_handler(request, exc):
-    """Global exception handler."""
-    return {
-        "error": "Internal server error",
-        "message": str(exc),
-        "status": "error"
-    }
+# ✅ AI Explanation endpoint
+class ExplainRequest(BaseModel):
+    code: str
+    step_data: dict
+    prev_step: Optional[dict] = None
+
+@app.post("/explain")
+def explain_step(req: ExplainRequest):
+    """Provide AI explanation for a code step."""
+    try:
+        step_data = req.step_data
+        line_num = step_data.get("line", 0)
+        vars_dict = step_data.get("vars", {})
+        
+        # Build a simple explanation
+        explanation = f"Line {line_num}: "
+        if vars_dict:
+            var_names = ", ".join(vars_dict.keys())
+            explanation += f"Variables: {var_names}"
+        else:
+            explanation += "No local variables yet"
+        
+        return {
+            "explanation": explanation,
+            "detail": f"Executing line {line_num} of the code",
+            "suggestion": "Step through the code to see how variables change",
+            "concept": "Code Execution"
+        }
+    except Exception as e:
+        return {
+            "explanation": f"Error: {str(e)}",
+            "detail": "Could not generate explanation",
+            "suggestion": "Check the code for syntax errors",
+            "concept": "Error Handling"
+        }
 
 
 # ── Vercel Serverless Handler ─────────────────────────

@@ -1,11 +1,22 @@
 services:
   - type: web
-    name: codeflow-api
+    name: codeflow-visualizer-frontend
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run preview
+    envVars:
+      - key: VITE_API_URL
+        value: "https://codeflow-visualizer-api.onrender.com"
+
+  - type: web
+    name: codeflow-visualizer-api
     runtime: python
-    buildCommand: pip install -r backend/requirements.txt
-    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port 10000
+    buildCommand: pip install -r api/requirements.txt
+    startCommand: uvicorn api.index:app --host 0.0.0.0 --port 10000
     envVars:
       - key: PYTHONUNBUFFERED
         value: "1"
+      - key: APP_ENV
+        value: "production"
       - key: ALLOWED_ORIGINS
-        value: "https://your-frontend.vercel.app"
+        value: "https://codeflow-visualizer-frontend.onrender.com"
