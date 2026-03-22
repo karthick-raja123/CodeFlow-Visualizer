@@ -29,6 +29,12 @@
 - Python (v3.10+)
 - npm or yarn
 
+### Local Development Links
+
+- **Frontend**: [http://localhost:5173](http://localhost:5173)
+- **Backend API**: [http://localhost:8000](http://localhost:8000)
+- **API Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
+
 ### Installation
 
 1. **Clone the repository**:
