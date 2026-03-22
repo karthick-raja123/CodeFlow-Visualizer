@@ -1,6 +1,6 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/dist",
   "framework": "vite",
   "functions": {
     "api/index.py": {
@@ -14,7 +14,12 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "frontend/$1",
+      "check": true
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/index.html"
     }
   ]
 }

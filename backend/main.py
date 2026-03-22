@@ -36,7 +36,7 @@ class ExplainRequest(BaseModel):
 
 
 # ── Executor (Popen-based, always safe) ───────────────
-from .executor import run_code
+from executor import run_code
 
 
 # ── Tracer (with hard timeout) ────────────────────────
@@ -129,7 +129,7 @@ def trace_execution(code: str, input_data: str = "") -> dict:
 
 
 # ── Explainer ─────────────────────────────────────────
-from .explainer import explain_step
+from explainer import explain_step
 
 
 # ── Health ────────────────────────────────────────────
