@@ -1,0 +1,333 @@
+{
+  "timestamp": "2026-03-24T20:02:38.303402",
+  "base_url": "http://localhost:8000",
+  "summary": {
+    "total_tests": 39,
+    "passed": 38,
+    "failed": 1,
+    "total_duration_ms": 118687
+  },
+  "modules": {
+    "functional": {
+      "status": "completed",
+      "tests": [
+        {
+          "name": "Health Check",
+          "status": "PASS",
+          "duration_ms": 2095,
+          "error": null
+        },
+        {
+          "name": "Simple Print",
+          "status": "PASS",
+          "duration_ms": 2087,
+          "error": null,
+          "output": "Hello World\n"
+        },
+        {
+          "name": "Arithmetic Operations",
+          "status": "PASS",
+          "duration_ms": 2085,
+          "error": null,
+          "output": "4\n"
+        },
+        {
+          "name": "Loop Execution",
+          "status": "PASS",
+          "duration_ms": 2136,
+          "error": null,
+          "output": "0\n1\n2\n"
+        },
+        {
+          "name": "Function Definition",
+          "status": "PASS",
+          "duration_ms": 2151,
+          "error": null,
+          "output": "8\n"
+        },
+        {
+          "name": "List Operations",
+          "status": "PASS",
+          "duration_ms": 2127,
+          "error": null,
+          "output": "3\n4\n"
+        },
+        {
+          "name": "Dictionary Operations",
+          "status": "PASS",
+          "duration_ms": 2095,
+          "error": null,
+          "output": "Alice\n"
+        },
+        {
+          "name": "Syntax Error Handling",
+          "status": "PASS",
+          "duration_ms": 2109,
+          "error": null,
+          "output": "  File \"C:\\Users\\KARTHI~1\\AppData\\Local\\Temp\\tmp24l6p2f3.py\", line 1\n    print(\"unclosed string\n          ^\nSyntaxError: unterminated string literal (detected at line 1)\n"
+        },
+        {
+          "name": "Runtime Error Handling",
+          "status": "PASS",
+          "duration_ms": 2121,
+          "error": null,
+          "output": "Traceback (most recent call last):\n  File \"C:\\Users\\KARTHI~1\\AppData\\Local\\Temp\\tmprnqbc_fv.py\", line 1, in <module>\n    x = 1 / 0\n        ~~^~~\nZeroDivisionError: division by zero\n"
+        },
+        {
+          "name": "Undefined Variable Error",
+          "status": "PASS",
+          "duration_ms": 2132,
+          "error": null,
+          "output": "Traceback (most recent call last):\n  File \"C:\\Users\\KARTHI~1\\AppData\\Local\\Temp\\tmpfy1nz08j.py\", line 1, in <module>\n    print(undefined_var)\n          ^^^^^^^^^^^^^\nNameError: name 'undefined_var' is not defined\n"
+        },
+        {
+          "name": "Input Data Handling",
+          "status": "PASS",
+          "duration_ms": 2101,
+          "error": null,
+          "output": "Hello, Alice!\n"
+        },
+        {
+          "name": "String Operations",
+          "status": "PASS",
+          "duration_ms": 2137,
+          "error": null,
+          "output": "HELLO\n"
+        }
+      ],
+      "passed": 12,
+      "failed": 0,
+      "total": 12
+    },
+    "performance": {
+      "status": "completed",
+      "tests": [
+        {
+          "name": "Simple Operation Response Time",
+          "status": "PASS",
+          "iterations": 5,
+          "durations_ms": [
+            2123,
+            2083,
+            2114,
+            2092,
+            2089
+          ],
+          "avg_duration_ms": 2100,
+          "min_duration_ms": 2083,
+          "max_duration_ms": 2123,
+          "error": null
+        },
+        {
+          "name": "Complex Operation Response Time",
+          "status": "PASS",
+          "iterations": 3,
+          "durations_ms": [
+            2100,
+            2109,
+            2112
+          ],
+          "avg_duration_ms": 2107,
+          "min_duration_ms": 2100,
+          "max_duration_ms": 2112,
+          "error": null
+        },
+        {
+          "name": "Concurrent Requests (5 parallel)",
+          "status": "PASS",
+          "num_requests": 5,
+          "successful": 5,
+          "failed": 0,
+          "durations_ms": [
+            2090,
+            2145,
+            2197,
+            2097,
+            2101
+          ],
+          "avg_duration_ms": 2126,
+          "error": null
+        },
+        {
+          "name": "Sequential Throughput (10 requests)",
+          "status": "PASS",
+          "num_requests": 10,
+          "successful": 10,
+          "total_duration_ms": 21077,
+          "avg_duration_ms": 2107,
+          "throughput_req_per_sec": 0.47,
+          "error": null
+        }
+      ],
+      "passed": 4,
+      "failed": 0,
+      "total": 4
+    },
+    "security": {
+      "status": "completed",
+      "tests": [
+        {
+          "name": "File System Access Control",
+          "status": "FAIL",
+          "duration_ms": 2087,
+          "error": "File system access may be exposed",
+          "security_issue": true
+        },
+        {
+          "name": "Dangerous Import: subprocess",
+          "status": "PASS",
+          "duration_ms": 2234,
+          "error": null,
+          "security_issue": false
+        },
+        {
+          "name": "Dangerous Function: os.system",
+          "status": "PASS",
+          "duration_ms": 2137,
+          "error": null,
+          "security_issue": false
+        },
+        {
+          "name": "Code Injection Attempt",
+          "status": "PASS",
+          "duration_ms": 2125,
+          "error": null,
+          "security_issue": false
+        },
+        {
+          "name": "SQL Injection Prevention",
+          "status": "PASS",
+          "duration_ms": 2136,
+          "error": null,
+          "security_issue": false
+        },
+        {
+          "name": "Memory Exhaustion Protection",
+          "status": "PASS",
+          "duration_ms": 2746,
+          "error": null,
+          "security_issue": false
+        },
+        {
+          "name": "Eval Function Behavior",
+          "status": "PASS",
+          "duration_ms": 2128,
+          "error": null,
+          "security_issue": false
+        },
+        {
+          "name": "Arbitrary Code Execution in Sandbox",
+          "status": "PASS",
+          "duration_ms": 2127,
+          "error": null,
+          "security_issue": false
+        },
+        {
+          "name": "Import Wildcard (* ) Usage",
+          "status": "PASS",
+          "duration_ms": 2113,
+          "error": null,
+          "security_issue": false
+        }
+      ],
+      "passed": 8,
+      "failed": 1,
+      "total": 9,
+      "security_issues": [
+        "File System Access Control: File system access may be exposed"
+      ]
+    },
+    "edge_cases": {
+      "status": "completed",
+      "tests": [
+        {
+          "name": "Empty Code Input",
+          "status": "PASS",
+          "duration_ms": 2112,
+          "error": null
+        },
+        {
+          "name": "Whitespace-Only Input",
+          "status": "PASS",
+          "duration_ms": 2155,
+          "error": null
+        },
+        {
+          "name": "Comments-Only Code",
+          "status": "PASS",
+          "duration_ms": 2111,
+          "error": null
+        },
+        {
+          "name": "Large Code Input (8KB)",
+          "status": "PASS",
+          "duration_ms": 2109,
+          "error": null
+        },
+        {
+          "name": "Code Exceeds Max Size",
+          "status": "PASS",
+          "duration_ms": 2050,
+          "error": null
+        },
+        {
+          "name": "Infinite Loop Detection (while True)",
+          "status": "PASS",
+          "duration_ms": 2034,
+          "error": null
+        },
+        {
+          "name": "Infinite Loop Detection (while 1)",
+          "status": "PASS",
+          "duration_ms": 2050,
+          "error": null
+        },
+        {
+          "name": "Deep Recursion",
+          "status": "PASS",
+          "duration_ms": 2161,
+          "error": null
+        },
+        {
+          "name": "Missing Required Fields",
+          "status": "PASS",
+          "duration_ms": 2033,
+          "error": null
+        },
+        {
+          "name": "Invalid JSON",
+          "status": "PASS",
+          "duration_ms": 2044,
+          "error": null
+        },
+        {
+          "name": "Special Characters in Code",
+          "status": "PASS",
+          "duration_ms": 2112,
+          "error": null
+        },
+        {
+          "name": "Unicode in Code",
+          "status": "PASS",
+          "duration_ms": 2129,
+          "error": null
+        },
+        {
+          "name": "Very Long Input Data",
+          "status": "PASS",
+          "duration_ms": 2121,
+          "error": null
+        },
+        {
+          "name": "Input Data Exceeds Max Size",
+          "status": "PASS",
+          "duration_ms": 2044,
+          "error": null
+        }
+      ],
+      "passed": 14,
+      "failed": 0,
+      "total": 14
+    }
+  }
+}

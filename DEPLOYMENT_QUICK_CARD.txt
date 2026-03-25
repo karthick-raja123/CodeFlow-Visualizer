@@ -1,0 +1,175 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║        RENDER DEPLOYMENT - MODULE FIX QUICK REFERENCE CARD                ║
+║                       Estimated Time: 2 minutes                           ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ STEP 1: VERIFY LOCAL SETUP (30 seconds)                               │
+└─────────────────────────────────────────────────────────────────────────┘
+
+cd d:\Git\Code Visualizer
+python -m uvicorn backend.main:app --port 8000
+
+Expected Output:
+  ✅ INFO: Application startup complete
+  ✅ INFO: Uvicorn running on http://127.0.0.1:8000
+
+If it fails:
+  → Check backend/__init__.py exists
+  → Verify imports in backend/main.py use "backend.*" paths
+
+Ctrl+C to stop server
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ STEP 2: COMMIT CHANGES (1 minute)                                     │
+└─────────────────────────────────────────────────────────────────────────┘
+
+cd d:\Git\Code Visualizer
+
+# Check what changed
+git status
+
+# Stage all changes
+git add .
+
+# Commit with message
+git commit -m "fix: resolve ModuleNotFoundError with proper package structure
+
+- Fix imports in backend/main.py to use absolute package paths
+- Update render.yaml to use backend.main:app as entry point
+- All imports now resolve correctly on Render deployment"
+
+# Push to GitHub (triggers Render auto-deployment)
+git push
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ STEP 3: MONITOR RENDER DEPLOYMENT (30 seconds waiting)                 │
+└─────────────────────────────────────────────────────────────────────────┘
+
+1. Visit: https://dashboard.render.com
+2. Click: codeflow-visualizer-api
+3. Check: "Events" section shows "Deploy Complete" ✅
+4. Check: "Logs" section shows no "ModuleNotFoundError" ✅
+5. Check: "Uvicorn running" message appears ✅
+
+Typical wait time: 2-5 minutes from git push
+
+Looking for these errors? You'll see them if something went wrong:
+  ❌ ModuleNotFoundError: No module named 'backend'
+  ❌ ImportError: cannot import name 'run_code' from 'executor'
+  ❌ FileNotFoundError: No such file or directory: ...
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ STEP 4: VALIDATE DEPLOYMENT (30 seconds)                              │
+└─────────────────────────────────────────────────────────────────────────┘
+
+Test Health Endpoint:
+  HTTP GET: https://codeflow-visualizer-api.onrender.com/health
+  Expected: {"status":"ok"}
+
+Test Execute Endpoint:
+  HTTP POST: https://codeflow-visualizer-api.onrender.com/execute
+  Body: {"code":"print('hello')","input_data":""}
+  Expected: {"output":"hello\\n","status":"success","error":""}
+
+Test Trace Endpoint:
+  HTTP POST: https://codeflow-visualizer-api.onrender.com/trace
+  Body: {"code":"x=5\\nprint(x)","input_data":""}
+  Expected: Steps array with execution flow
+
+All tests pass? ✅ DEPLOYMENT SUCCESSFUL!
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                   WHAT WAS CHANGED (REFERENCE)                          ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+File 1: backend/main.py
+────────────────────────────────────────────────────────────────────────
+BEFORE:
+  from executor import run_code
+  from tracer import trace_execution
+  from explainer import explain_step
+
+AFTER:
+  from backend.executor import run_code
+  from backend.tracer import trace_execution
+  from backend.explainer import explain_step
+
+Also changed:
+  "main:app" → "backend.main:app" (in uvicorn.run call)
+
+File 2: render.yaml (Render Deployment Config)
+────────────────────────────────────────────────────────────────────────
+BEFORE:
+  buildCommand: pip install -r api/requirements.txt
+  startCommand: uvicorn api.index:app --host 0.0.0.0 --port 10000
+
+AFTER:
+  buildCommand: pip install -r requirements.txt
+  startCommand: uvicorn backend.main:app --host 0.0.0.0 --port 10000
+
+File 3: backend/__init__.py
+────────────────────────────────────────────────────────────────────────
+Status: ✅ Already exists (verified)
+Can stay empty - Python treats backend/ as package
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                    TROUBLESHOOTING (IF ISSUES OCCUR)                     ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+Problem 1: "ModuleNotFoundError: No module named 'backend'"
+─────────────────────────────────────────────────────────
+Solution A: Check git push succeeded
+  → Run: git log -1
+  → Should show your latest commit
+
+Solution B: Force Render to redeploy
+  → Render dashboard > codeflow-visualizer-api
+  → Click "Manual Deploy" > "Deploy latest commit"
+
+Solution C: Check render.yaml changes were pushed
+  → Run: git show render.yaml
+  → Should show startCommand: uvicorn backend.main:app
+
+Problem 2: "ModuleNotFoundError: No module named 'executor'"
+─────────────────────────────────────────────────────────
+This means imports in backend/main.py weren't fixed
+Solution:
+  → Check: backend/main.py has "from backend.executor import"
+  → Commit: git add . && git commit -m "fix" && git push
+  → Wait: 2-5 minutes for Render to auto-deploy
+
+Problem 3: Server starts but endpoints return 404
+─────────────────────────────────────────────────────
+Solution:
+  → Check API URL in frontend is correct
+  → Endpoint should be: https://codeflow-visualizer-api.onrender.com
+  → Not the internal Render URL
+
+Problem 4: Server times out or returns 500 error
+─────────────────────────────────────────────────
+Solution:
+  → Check Render logs for actual error message
+  → Might be missing dependencies in requirements.txt
+  → Or execution timeout in executor.py
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                          SUCCESS CHECKLIST                               ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+✓ Can run locally: python -m uvicorn backend.main:app --port 8000
+✓ backend/main.py uses "from backend.*" imports
+✓ render.yaml uses "backend.main:app" entry point
+✓ Git push completed successfully
+✓ Render "Deploy Complete" appears in dashboard
+✓ No ModuleNotFoundError in Render logs
+✓ /health endpoint returns {"status":"ok"}
+✓ /execute endpoint works with test code
+✓ /trace endpoint returns execution steps
+
+All checkmarks ✓ = PRODUCTION READY! 🎉
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                          DEPLOYMENT COMPLETE                             ║
+║                    Your app is now on Render! 🚀                          ║
+╚═══════════════════════════════════════════════════════════════════════════╝
