@@ -11,9 +11,13 @@ function resolveApiHost() {
 	}
 	if (typeof window !== 'undefined') {
 		const { hostname, origin } = window.location;
+		// For localhost development, use localhost backend
 		if (hostname === 'localhost' || hostname.startsWith('127.')) {
 			return 'http://localhost:8000';
 		}
+		// For production, check if we have a custom backend URL
+		// Otherwise use the same origin as frontend
+		// This supports Render deployments where backend has its own domain
 		return stripTrailingSlash(origin);
 	}
 	return 'http://localhost:8000';

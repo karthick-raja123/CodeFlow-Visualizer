@@ -5,9 +5,8 @@ import { useTheme } from './context/ThemeContext';
 import MemoryPanel from './components/MemoryPanel';
 import FlowDiagram from './components/FlowDiagram';
 import ExplanationPanel from './components/ExplanationPanel';
+import { runCode, traceCode, getExplanation } from './services/api';
 import './index.css';
-
-const API = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const SAMPLE = `x = 10
 y = 20
@@ -96,25 +95,13 @@ export default function App() {
     }
   }, [cur]);
 
-  // ── Safe fetch with 10s timeout ─────────────────────
-  const safeFetch = (url, body) => {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 10000);
-    return fetch(url, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body), signal: ctrl.signal,
-    }).finally(() => clearTimeout(timer));
-  };
-
   // ── Run ───────────────────────────────────────────
   const run = async () => {
     setRunning(true); setOutput(''); setError(null); setSteps([]); setCurrentStep(-1);
     try {
-      const res = await safeFetch(`${API}/execute`, { code, input_data: userInput });
-      if (!res.ok) throw new Error(`Server error: ${res.status}`);
-      const d = await res.json();
-      setOutput(d.output || '(no output)');
-      if (d.error) setError(d.error);
+      const result = await runCode(code, userInput);
+      setOutput(result.output || '(no output)');
+      if (result.error) setError(result.error);
     } catch (e) {
       const msg = e.name === 'AbortError' ? 'Request timed out (10s). Code may have an infinite loop.' : `Connection failed: ${e.message}`;
       setError(msg);
@@ -126,16 +113,14 @@ export default function App() {
   const trace = async () => {
     setRunning(true); setOutput(''); setError(null); setSteps([]); setCurrentStep(-1);
     try {
-      const res = await safeFetch(`${API}/trace`, { code, input_data: userInput });
-      if (!res.ok) throw new Error(`Server error: ${res.status}`);
-      const d = await res.json();
-      if (d.steps?.length > 0) {
-        setSteps(d.steps); setCurrentStep(0);
-        setOutput(d.stdout || '(no output)');
-        if (d.stderr) setError(d.stderr);
+      const result = await traceCode(code, userInput);
+      if (result.steps?.length > 0) {
+        setSteps(result.steps); setCurrentStep(0);
+        setOutput(result.stdout || '(no output)');
+        if (result.stderr) setError(result.stderr);
         setActiveTab('explain');
       } else {
-        setOutput(d.stderr || 'No steps captured.');
+        setOutput(result.stderr || 'No steps captured.');
       }
     } catch (e) {
       const msg = e.name === 'AbortError' ? 'Trace timed out (10s). Code may be too complex.' : `Connection failed: ${e.message}`;
